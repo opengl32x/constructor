@@ -22,12 +22,12 @@ export function CheckoutPage() {
 
   const validate = (): boolean => {
     const e: Record<string, string> = {};
-    if (!form.customer_name.trim()) e.customer_name = 'Введите имя';
+    if (!form.customer_name.trim()) e.customer_name = 'Введите ФИО';
     if (!form.customer_email.trim()) e.customer_email = 'Введите email';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.customer_email))
       e.customer_email = 'Неверный формат email';
     if (!form.customer_phone.trim()) e.customer_phone = 'Введите телефон';
-    if (!form.shipping_address.trim()) e.shipping_address = 'Введите адрес доставки';
+    if (!form.shipping_address.trim()) e.shipping_address = 'Укажите группу';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -39,6 +39,8 @@ export function CheckoutPage() {
     try {
       const order: OrderInsert = {
         ...form,
+        // Доставки нет: заказ забирают в колледже. Группа сохраняется в поле адреса.
+        shipping_address: `Самовывоз: Нархоз Колледж. Группа: ${form.shipping_address.trim()}`,
         items,
         total_amount: total,
         status: 'pending',
@@ -65,7 +67,7 @@ export function CheckoutPage() {
           </div>
           <h1 className="mt-6 text-3xl font-extrabold text-gray-900">Заказ оформлен!</h1>
           <p className="mt-3 text-gray-500">
-            Спасибо за заказ. Мы свяжемся с вами в течение часа для подтверждения.
+            Спасибо за заказ! Мы свяжемся с вами для подтверждения и сообщим, когда мерч будет готов к выдаче в колледже.
           </p>
           <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 px-6 py-4">
             <div className="text-sm text-gray-500">Номер заказа</div>
@@ -102,7 +104,7 @@ export function CheckoutPage() {
           </div>
           <h1 className="mt-6 text-2xl font-bold text-gray-900">Корзина пуста</h1>
           <p className="mt-2 text-gray-500">
-            Создайте свой мерч в конструкторе и добавьте сюда.
+            Создайте свой мерч в конструкторе и добавьте его сюда.
           </p>
           <div className="mt-8 flex gap-3">
             <button
@@ -113,7 +115,7 @@ export function CheckoutPage() {
             </button>
             <button
               onClick={() => navigate('/constructor')}
-              className="rounded-xl bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange-600"
+              className="rounded-xl bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-600"
             >
               Открыть конструктор
             </button>
@@ -196,10 +198,10 @@ export function CheckoutPage() {
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-extrabold text-gray-900">
-                        {(item.basePrice * item.quantity).toLocaleString('ru-RU')} ₽
+                        {(item.basePrice * item.quantity).toLocaleString('ru-RU')} ₸
                       </div>
                       <div className="text-xs text-gray-400">
-                        {item.basePrice.toLocaleString('ru-RU')} ₽/шт
+                        {item.basePrice.toLocaleString('ru-RU')} ₸/шт
                       </div>
                     </div>
                   </div>
@@ -218,10 +220,10 @@ export function CheckoutPage() {
           )}
 
           <form onSubmit={handleSubmit} className="rounded-2xl border border-gray-200 bg-white p-6">
-            <h2 className="mb-4 text-lg font-bold text-gray-900">Данные получателя</h2>
+            <h2 className="mb-4 text-lg font-bold text-gray-900">Данные студента</h2>
             <div className="space-y-3">
               <div>
-                <label className="mb-1 block text-xs font-medium text-gray-500">Имя</label>
+                <label className="mb-1 block text-xs font-medium text-gray-500">ФИО</label>
                 <input
                   type="text"
                   value={form.customer_name}
@@ -229,7 +231,7 @@ export function CheckoutPage() {
                   className={`w-full rounded-lg border px-3 py-2.5 text-sm focus:outline-none ${
                     errors.customer_name ? 'border-red-300 focus:border-red-400' : 'border-gray-200 focus:border-gray-400'
                   }`}
-                  placeholder="Иван Иванов"
+                  placeholder="Асем Нурланова"
                 />
                 {errors.customer_name && <p className="mt-1 text-xs text-red-500">{errors.customer_name}</p>}
               </div>
@@ -242,7 +244,7 @@ export function CheckoutPage() {
                   className={`w-full rounded-lg border px-3 py-2.5 text-sm focus:outline-none ${
                     errors.customer_email ? 'border-red-300 focus:border-red-400' : 'border-gray-200 focus:border-gray-400'
                   }`}
-                  placeholder="ivan@example.com"
+                  placeholder="student@example.com"
                 />
                 {errors.customer_email && <p className="mt-1 text-xs text-red-500">{errors.customer_email}</p>}
               </div>
@@ -255,12 +257,12 @@ export function CheckoutPage() {
                   className={`w-full rounded-lg border px-3 py-2.5 text-sm focus:outline-none ${
                     errors.customer_phone ? 'border-red-300 focus:border-red-400' : 'border-gray-200 focus:border-gray-400'
                   }`}
-                  placeholder="+7 (999) 123-45-67"
+                  placeholder="+7 (700) 123-45-67"
                 />
                 {errors.customer_phone && <p className="mt-1 text-xs text-red-500">{errors.customer_phone}</p>}
               </div>
               <div>
-                <label className="mb-1 block text-xs font-medium text-gray-500">Адрес доставки</label>
+                <label className="mb-1 block text-xs font-medium text-gray-500">Группа и специальность</label>
                 <textarea
                   value={form.shipping_address}
                   onChange={(e) => setForm({ ...form, shipping_address: e.target.value })}
@@ -268,7 +270,7 @@ export function CheckoutPage() {
                   className={`w-full rounded-lg border px-3 py-2.5 text-sm focus:outline-none ${
                     errors.shipping_address ? 'border-red-300 focus:border-red-400' : 'border-gray-200 focus:border-gray-400'
                   }`}
-                  placeholder="Город, улица, дом, квартира, индекс"
+                  placeholder="Например: ИС-21, Информационные системы"
                 />
                 {errors.shipping_address && <p className="mt-1 text-xs text-red-500">{errors.shipping_address}</p>}
               </div>
@@ -279,15 +281,15 @@ export function CheckoutPage() {
               <div className="space-y-1.5 text-sm">
                 <div className="flex justify-between text-gray-500">
                   <span>Товары ({items.reduce((s, i) => s + i.quantity, 0)} шт)</span>
-                  <span>{total.toLocaleString('ru-RU')} ₽</span>
+                  <span>{total.toLocaleString('ru-RU')} ₸</span>
                 </div>
                 <div className="flex justify-between text-gray-500">
-                  <span>Доставка</span>
-                  <span className="text-green-600">Бесплатно</span>
+                  <span>Получение</span>
+                  <span className="text-green-600">Самовывоз в колледже</span>
                 </div>
                 <div className="flex justify-between border-t border-gray-100 pt-2 text-lg font-extrabold text-gray-900">
                   <span>Итого</span>
-                  <span>{total.toLocaleString('ru-RU')} ₽</span>
+                  <span>{total.toLocaleString('ru-RU')} ₸</span>
                 </div>
               </div>
             </div>
@@ -295,7 +297,7 @@ export function CheckoutPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-orange-500 py-3.5 text-sm font-bold text-white transition hover:bg-orange-600 disabled:opacity-50"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-brand-500 py-3.5 text-sm font-bold text-white transition hover:bg-brand-600 disabled:opacity-50"
             >
               <ShoppingBag className="h-5 w-5" />
               {submitting ? 'Оформление…' : 'Оформить заказ'}

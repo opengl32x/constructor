@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ArrowRight, Wand2, Palette, Layers, ShoppingBag } from 'lucide-react';
+import { ArrowRight, Wand2, Palette, Layers, ShoppingBag, MapPin } from 'lucide-react';
 import type { Product, Preset, ProductColor } from '@/types';
 import { fetchProducts, fetchFeaturedPresets } from '@/services/database';
 import { getMockupUrl } from '@/services/mockups';
@@ -60,29 +60,25 @@ export function CatalogPage() {
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute -left-20 -top-20 h-80 w-80 rounded-full bg-orange-500 blur-3xl" />
+          <div className="absolute -left-20 -top-20 h-80 w-80 rounded-full bg-brand-500 blur-3xl" />
           <div className="absolute -bottom-20 -right-20 h-80 w-80 rounded-full bg-blue-500 blur-3xl" />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-medium text-orange-300">
-              <Sparkles className="h-4 w-4" />
-              Печатаем с 2019 года
-            </div>
-            <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">
+            <h1 className="text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">
               Создай свой<br />
-              <span className="bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent">
                 уникальный мерч
               </span>
             </h1>
             <p className="mt-6 max-w-lg text-lg text-gray-300">
-              Загружай свои дизайны, добавляй текст и графику, выбирай цвета и оформляй заказ.
-              Всё прямо в браузере — без программ и дизайнеров.
+              Добавляй принты, надписи и логотипы, выбирай цвет и оформляй заказ — всё прямо в браузере,
+              без специальных программ. Готовый мерч ты заберёшь в колледже.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <button
                 onClick={() => navigate('/constructor')}
-                className="inline-flex items-center gap-2 rounded-xl bg-orange-500 px-6 py-3.5 text-base font-semibold text-white transition hover:bg-orange-600"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-6 py-3.5 text-base font-semibold text-white transition hover:bg-brand-600"
               >
                 <Wand2 className="h-5 w-5" />
                 Создать свой мерч
@@ -103,13 +99,13 @@ export function CatalogPage() {
       <section className="border-b border-gray-200 bg-white">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-4 px-4 py-8 sm:px-6 md:grid-cols-4 lg:px-8">
           {[
-            { icon: Palette, label: '8+ цветов на вещь', desc: 'Подберём под бренд' },
-            { icon: Layers, label: 'Свободный дизайн', desc: 'Текст, фото, иконки' },
+            { icon: Palette, label: 'Любые цвета', desc: 'Выбери цвет худи или футболки' },
+            { icon: Layers, label: 'Свой дизайн', desc: 'Принты, надписи, логотипы' },
             { icon: ShoppingBag, label: 'От 1 штуки', desc: 'Без минимального заказа' },
-            { icon: Sparkles, label: 'DTF-печать', desc: 'Не трескается, не выгорает' },
+            { icon: MapPin, label: 'Получение в колледже', desc: 'Самовывоз, без доставки' },
           ].map((f, i) => (
             <div key={i} className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-orange-50 text-orange-600">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600">
                 <f.icon className="h-5 w-5" />
               </div>
               <div>
@@ -128,7 +124,7 @@ export function CatalogPage() {
             <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
               Базовые вещи
             </h2>
-            <p className="mt-2 text-gray-500">Выберите основу и начните дизайн</p>
+            <p className="mt-2 text-gray-500">Выберите вещь и начните создавать свой дизайн</p>
           </div>
         </div>
 
@@ -172,7 +168,7 @@ export function CatalogPage() {
                         }
                         className={`h-6 w-6 rounded-full border-2 transition ${
                           color?.hex === c.hex
-                            ? 'border-gray-900 ring-2 ring-orange-300 ring-offset-1'
+                            ? 'border-gray-900 ring-2 ring-brand-300 ring-offset-1'
                             : 'border-gray-200 hover:border-gray-400'
                         }`}
                         style={{ backgroundColor: c.hex }}
@@ -186,7 +182,7 @@ export function CatalogPage() {
                     <div>
                       <span className="text-xs text-gray-400">от</span>
                       <span className="ml-1 text-xl font-extrabold text-gray-900">
-                        {product.base_price.toLocaleString('ru-RU')} ₽
+                        {product.base_price.toLocaleString('ru-RU')} ₸
                       </span>
                     </div>
                     <button
@@ -213,7 +209,7 @@ export function CatalogPage() {
                 <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
                   Готовые дизайны
                 </h2>
-                <p className="mt-2 text-gray-500">Популярные пресеты от сообщества — кликни и доработай</p>
+                <p className="mt-2 text-gray-500">Идеи от студентов — выбери готовый дизайн и доработай под себя</p>
               </div>
             </div>
 

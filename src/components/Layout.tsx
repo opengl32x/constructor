@@ -1,7 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Shirt, Menu, X } from 'lucide-react';
+import { ShoppingCart, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
+import { Logo } from '@/components/Logo';
 
 export function Header() {
   const { count } = useCart();
@@ -12,11 +13,8 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 text-xl font-extrabold tracking-tight">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-900 text-white">
-            <Shirt className="h-5 w-5" />
-          </div>
-          <span className="text-gray-900">MERCH<span className="text-orange-500">LAB</span></span>
+        <Link to="/" className="flex items-center" aria-label="NarxozFab — на главную">
+          <Logo className="text-[26px]" />
         </Link>
 
         {/* Desktop nav */}
@@ -43,7 +41,7 @@ export function Header() {
           >
             <ShoppingCart className="h-5 w-5" />
             {count > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1 text-xs font-bold text-white">
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-500 px-1 text-xs font-bold text-white">
                 {count}
               </span>
             )}
@@ -86,12 +84,11 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2 text-lg font-extrabold">
-              <span className="text-gray-900">MERCH<span className="text-orange-500">LAB</span></span>
-            </div>
+            <Logo className="text-[22px]" />
             <p className="mt-3 max-w-sm text-sm text-gray-500">
-              Конструктор кастомного мерча. Создавайте уникальный дизайн на худи, футболках,
-              свитшотах и кепках. Печать на современном оборудовании, доставка по всей России.
+              Студенческая мерч-мастерская Нархоз Колледж. Создавайте уникальный дизайн на худи,
+              футболках, свитшотах и кепках: добавляйте принты, надписи и логотипы,
+              а готовый мерч забирайте прямо в колледже.
             </p>
           </div>
           <div>
@@ -105,14 +102,13 @@ export function Footer() {
           <div>
             <h4 className="text-sm font-semibold text-gray-900">Контакты</h4>
             <ul className="mt-3 space-y-2 text-sm text-gray-500">
-              <li>hello@merchlab.ru</li>
-              <li>+7 (495) 123-45-67</li>
-              <li>Москва, ул. Дизайна 1</li>
+              <li>Самовывоз: Нархоз Колледж, Алматы</li>
+              <li>О готовности заказа сообщим по телефону или email</li>
             </ul>
           </div>
         </div>
         <div className="mt-10 border-t border-gray-200 pt-6 text-center text-xs text-gray-400">
-          © 2026 MERCHLAB. Все права защищены.
+          © 2026 NarxozFab · Нархоз Колледж
         </div>
       </div>
     </footer>

@@ -376,7 +376,7 @@ export function ConstructorPage() {
                 key={m}
                 onClick={() => setViewMode(m)}
                 className={`rounded-md px-3 py-1.5 text-sm font-semibold transition ${
-                  viewMode === m ? 'bg-orange-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+                  viewMode === m ? 'bg-brand-500 text-white' : 'text-gray-600 hover:bg-gray-100'
                 }`}
               >
                 {label}
@@ -497,7 +497,7 @@ export function ConstructorPage() {
                       }}
                       className={`h-8 w-8 rounded-full border-2 transition ${
                         selectedColor === c.hex
-                          ? 'border-gray-900 ring-2 ring-orange-300 ring-offset-1'
+                          ? 'border-gray-900 ring-2 ring-brand-300 ring-offset-1'
                           : 'border-gray-200 hover:border-gray-400'
                       }`}
                       style={{ backgroundColor: c.hex }}
@@ -514,7 +514,7 @@ export function ConstructorPage() {
                   onClick={() => canvasRef.current?.addText()}
                   className="flex flex-col items-center gap-1.5 rounded-lg border border-gray-200 py-3 text-xs font-medium text-gray-700 transition hover:border-gray-400 hover:bg-gray-50"
                 >
-                  <Type className="h-5 w-5 text-orange-500" />
+                  <Type className="h-5 w-5 text-brand-500" />
                   Текст
                 </button>
                 <label className="flex flex-col items-center gap-1.5 rounded-lg border border-gray-200 py-3 text-xs font-medium text-gray-700 transition hover:border-gray-400 hover:bg-gray-50 cursor-pointer">
@@ -522,8 +522,8 @@ export function ConstructorPage() {
                     <span className="text-xs text-gray-400">Загрузка…</span>
                   ) : (
                     <>
-                      <ImageIcon className="h-5 w-5 text-orange-500" />
-                      Картинка
+                      <ImageIcon className="h-5 w-5 text-brand-500" />
+                      Принт / лого
                     </>
                   )}
                   <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
@@ -532,7 +532,7 @@ export function ConstructorPage() {
                   onClick={() => setActiveTab('add')}
                   className="flex flex-col items-center gap-1.5 rounded-lg border border-gray-200 py-3 text-xs font-medium text-gray-700 transition hover:border-gray-400 hover:bg-gray-50"
                 >
-                  <Shapes className="h-5 w-5 text-orange-500" />
+                  <Shapes className="h-5 w-5 text-brand-500" />
                   Иконки
                 </button>
               </div>
@@ -570,7 +570,7 @@ export function ConstructorPage() {
                     <button
                       key={clip.id}
                       onClick={() => handleAddClipart(clip.image_url)}
-                      className="flex aspect-square items-center justify-center rounded-lg border border-gray-200 bg-white p-2 transition hover:border-orange-400 hover:bg-orange-50"
+                      className="flex aspect-square items-center justify-center rounded-lg border border-gray-200 bg-white p-2 transition hover:border-brand-400 hover:bg-brand-50"
                       title={clip.name}
                     >
                       <img src={clip.image_url} alt={clip.name} className="h-full w-full object-contain" />
@@ -598,7 +598,7 @@ export function ConstructorPage() {
                       key={layer.id}
                       className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${
                         activeLayer?.id === layer.id
-                          ? 'border-orange-400 bg-orange-50'
+                          ? 'border-brand-400 bg-brand-50'
                           : 'border-gray-200 hover:bg-gray-50'
                       }`}
                     >
@@ -665,7 +665,7 @@ export function ConstructorPage() {
                           max={80}
                           value={activeLayer.fontSize ?? 28}
                           onChange={(e) => updateLayerProp({ fontSize: Number(e.target.value) })}
-                          className="w-full accent-orange-500"
+                          className="w-full accent-brand-500"
                         />
                       </div>
                       <div className="flex gap-2">
@@ -710,7 +710,7 @@ export function ConstructorPage() {
                           step={0.01}
                           value={activeLayer.lineHeight ?? 1.16}
                           onChange={(e) => updateLayerProp({ lineHeight: Number(e.target.value) })}
-                          className="w-full accent-orange-500"
+                          className="w-full accent-brand-500"
                         />
                       </div>
                       <div>
@@ -745,7 +745,7 @@ export function ConstructorPage() {
                       step={0.01}
                       value={activeLayer.opacity ?? 1}
                       onChange={(e) => updateLayerProp({ opacity: Number(e.target.value) })}
-                      className="w-full accent-orange-500"
+                      className="w-full accent-brand-500"
                     />
                   </div>
                   <div>
@@ -758,7 +758,7 @@ export function ConstructorPage() {
                       max={180}
                       value={activeLayer.angle ?? 0}
                       onChange={(e) => updateLayerProp({ angle: Number(e.target.value) })}
-                      className="w-full accent-orange-500"
+                      className="w-full accent-brand-500"
                     />
                   </div>
                   <div className="flex gap-2">
@@ -826,7 +826,7 @@ export function ConstructorPage() {
             <div className="mb-3 flex items-center justify-between border-t border-gray-100 pt-3">
               <span className="text-sm text-gray-500">Итого:</span>
               <span className="text-xl font-extrabold text-gray-900">
-                {(product.base_price * quantity).toLocaleString('ru-RU')} ₽
+                {(product.base_price * quantity).toLocaleString('ru-RU')} ₸
               </span>
             </div>
 
@@ -835,7 +835,7 @@ export function ConstructorPage() {
               <button
                 onClick={handleAddToCart}
                 disabled={addingToCart}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-orange-500 py-3 text-sm font-bold text-white transition hover:bg-orange-600 disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-500 py-3 text-sm font-bold text-white transition hover:bg-brand-600 disabled:opacity-50"
               >
                 <ShoppingBag className="h-5 w-5" />
                 {addingToCart ? 'Добавление…' : 'В корзину'}
@@ -858,13 +858,13 @@ export function ConstructorPage() {
           <div className="w-full max-w-md rounded-2xl bg-white p-6">
             <h3 className="text-lg font-bold text-gray-900">Сохранить дизайн</h3>
             <p className="mt-1 text-sm text-gray-500">
-              Назовите свой пресет, чтобы сохранить его для будущего использования.
+              Назовите свой дизайн, чтобы сохранить его и вернуться к нему позже.
             </p>
             <input
               type="text"
               value={presetName}
               onChange={(e) => setPresetName(e.target.value)}
-              placeholder="Например: Мой бренд 2026"
+              placeholder="Например: Принт нашей группы"
               className="mt-4 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-gray-400 focus:outline-none"
               autoFocus
             />
