@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Trash2, ShoppingBag, CheckCircle2, ArrowLeft, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { createOrder } from '@/services/database';
-import { getMockupUrl } from '@/services/mockups';
+import { GarmentPhoto } from '@/components/GarmentPhoto';
 import type { OrderInsert } from '@/types';
 
 export function CheckoutPage() {
@@ -154,8 +154,8 @@ export function CheckoutPage() {
               >
                 {/* Preview */}
                 <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-gray-50 to-gray-100">
-                  <img
-                    src={item.previewUrl || getMockupUrl(item.productType, item.side, item.color)}
+                  <GarmentPhoto
+                    type={item.productType} side={item.side} color={item.color} preview={item.previewUrl}
                     alt={item.productName}
                     className="h-full w-full rounded-xl object-contain p-1"
                   />

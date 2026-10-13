@@ -53,6 +53,7 @@ const MerchCanvas = forwardRef<MerchCanvasHandle, MerchCanvasProps>(
   ) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const fabricRef = useRef<fabric.Canvas | null>(null);
+    const mockupRequest = useRef(0);
     const mockupRef = useRef<FabricObj | null>(null);
     const printAreaRef = useRef<FabricObj | null>(null);
     const colorRef = useRef(color);
@@ -166,17 +167,16 @@ const MerchCanvas = forwardRef<MerchCanvasHandle, MerchCanvasProps>(
       const canvas = fabricRef.current;
       if (!canvas) return;
 
-      const url = getMockupUrl(
-        productTypeRef.current as ProductType,
-        sideRef.current,
-        colorRef.current,
-        canvasArea,
-        true,
-      );
-
+      const request = ++mockupRequest.current;
       try {
+        const url = await getMockupUrl(
+          productTypeRef.current as ProductType,
+          sideRef.current,
+          colorRef.current,
+        );
+
         const img = await loadImage(url);
-        if (!img) return;
+        if (!img || request !== mockupRequest.current || fabricRef.current !== canvas) return;
 
         if (mockupRef.current) {
           canvas.remove(mockupRef.current);
@@ -590,7 +590,7 @@ const MerchCanvas = forwardRef<MerchCanvasHandle, MerchCanvasProps>(
       colorRef.current = color;
       reloadMockup();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [productType, side, color]);
+    }, [productType, side, color, canvasArea.x, canvasArea.y, canvasArea.width, canvasArea.height]);
 
     return (
       <div className="relative inline-block">
@@ -601,4 +601,3 @@ const MerchCanvas = forwardRef<MerchCanvasHandle, MerchCanvasProps>(
 );
 
 export default MerchCanvas;
-export { FONTS };
