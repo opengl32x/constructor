@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&family=Fira+Code:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -39,3 +40,12 @@ input[type='range'] {
   background: #e5e7eb;
   cursor: pointer;
 }
+
+
+/* Merch studio refresh: crisp, editorial controls and a focused design workspace */
+:root { --studio-ink: #171717; --studio-red: #e30613; --studio-line: #e7e7e7; }
+button, select, input, textarea { transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease; }
+button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid rgba(227, 6, 19, .65); outline-offset: 2px;
+}
+select { max-width: 100%; }

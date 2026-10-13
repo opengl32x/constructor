@@ -73,15 +73,41 @@ function build(type: ProductType, color: string, area: CanvasArea, weave: THREE.
     return mesh;
   };
 
-  // torso (tapered, elliptical, with soft cloth folds)
-  const tg = new THREE.CylinderGeometry(c.top, 1, c.h, 96, 48, true);
-  displace(tg, 0, .02);
-  add(tg).scale.set(c.rx, 1, c.rz);
+  // Tailored torso: a continuous, softly contoured fabric shell rather than
+  // the old open cylinder + dome (which read as armour/body armour).
+  if (!c.cap) {
+    const rings = [
+      [-c.h / 2, .82], [-c.h / 2 + .05, .86], [-.55, .90],
+      [-.15, .94], [.25, 1.00], [.62, 1.04], [.82, .98],
+      [c.h / 2 - .12, .78], [c.h / 2, .58],
+    ];
+    const radial = 96, positions: number[] = [], indices: number[] = [];
+    rings.forEach(([y, width], ri) => {
+      for (let j = 0; j <= radial; j++) {
+        const a = j / radial * Math.PI * 2;
+        const ripple = .008 * Math.sin(a * 7 + ri * .4);
+        positions.push(Math.cos(a) * c.rx * width * (1 + ripple), y,
+          Math.sin(a) * c.rz * width * (1 + ripple));
+      }
+    });
+    for (let r = 0; r < rings.length - 1; r++) {
+      for (let j = 0; j < radial; j++) {
+        const a = r * (radial + 1) + j, b = a + radial + 1;
+        indices.push(a, b, a + 1, b, b + 1, a + 1);
+      }
+    }
+    const tg = new THREE.BufferGeometry();
+    tg.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    tg.setIndex(indices);
+    tg.computeVertexNormals();
+    add(tg);
+  } else {
+    const crown = add(new THREE.SphereGeometry(.58, 64, 32));
+    crown.scale.set(1.0, .68, .9);
+    crown.position.y = .08;
+  }
 
-  // shoulders / crown
-  const dome = add(new THREE.SphereGeometry(c.top, 64, 16, 0, Math.PI * 2, 0, Math.PI / 2));
-  dome.scale.set(c.rx, c.cap ? .85 : .3, c.rz);
-  dome.position.y = c.h / 2;
+  // Ribbed collar sits at the actual neckline, not above a dome.
 
   if (c.cap) {
     const brim = add(new THREE.CircleGeometry(1, 40, 0, Math.PI));
@@ -93,18 +119,18 @@ function build(type: ProductType, color: string, area: CanvasArea, weave: THREE.
     const collar = add(new THREE.TorusGeometry(.2, .035, 16, 48), mat);
     collar.rotation.x = Math.PI / 2;
     collar.scale.set(1, .6, 1);
-    collar.position.y = c.h / 2 + .29;
+    collar.position.y = c.h / 2 - .015;
     const hole = add(new THREE.CircleGeometry(.2, 32), dark);
     hole.rotation.x = -Math.PI / 2;
     hole.scale.set(1, .6, 1);
-    hole.position.y = c.h / 2 + .285;
+    hole.position.y = c.h / 2 - .02;
   }
 
   for (const s of c.sleeve ? [-1, 1] : []) {
-    const geo = new THREE.CylinderGeometry(.28, c.sleeve > 1 ? .17 : .25, c.sleeve, 40, 20, true);
+    const geo = new THREE.CylinderGeometry(c.sleeve > 1 ? .22 : .27, c.sleeve > 1 ? .18 : .23, c.sleeve, 48, 24, false);
     displace(geo, 0, .015);
     const m = add(geo);
-    const sx = s * c.rx * c.top * .95, sy = c.h / 2 - .05;
+    const sx = s * c.rx * .79, sy = c.h / 2 - .12;
     m.rotation.z = s * c.ang;
     m.position.set(sx + (s * Math.sin(c.ang) * c.sleeve) / 2, sy - (Math.cos(c.ang) * c.sleeve) / 2, 0);
   }

@@ -35,9 +35,15 @@ interface MerchCanvasProps {
   onLayersChanged: (layers: DesignLayer[]) => void;
 }
 
-const FONTS = [
-  'Arial', 'Arial Black', 'Georgia', 'Impact',
-  'Times New Roman', 'Courier New', 'Verdana',
+export const FONTS = [
+  'Arial', 'Arial Black', 'Arial Narrow', 'Avenir Next', 'Bebas Neue',
+  'Brush Script MT', 'Calibri', 'Cambria', 'Candara', 'Comic Sans MS',
+  'Consolas', 'Courier New', 'DM Sans', 'Futura', 'Garamond', 'Georgia',
+  'Gill Sans', 'Helvetica', 'Impact', 'Inter', 'Lato', 'Liberation Sans',
+  'Lucida Console', 'Lucida Sans', 'Montserrat', 'MS Gothic', 'Nunito',
+  'Open Sans', 'Oswald', 'Palatino Linotype', 'Papyrus', 'Roboto',
+  'Rockwell', 'Segoe UI', 'Tahoma', 'Times New Roman', 'Trebuchet MS',
+  'Verdana', 'Anton', 'Monaco', 'cursive', 'fantasy', 'serif', 'sans-serif',
 ];
 
 const MerchCanvas = forwardRef<MerchCanvasHandle, MerchCanvasProps>(
