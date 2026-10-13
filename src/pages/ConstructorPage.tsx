@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   Type, Image as ImageIcon, Shapes, Trash2, Copy,
@@ -11,6 +11,10 @@ import type { Product, Clipart, DesignLayer, DesignSide, DesignConfig, CartItem 
 import { fetchProductById, fetchCliparts, savePreset } from '@/services/database';
 import { uploadToCloudinary, dataUrlToBlob } from '@/services/cloudinary';
 import { useCart } from '@/context/CartContext';
+import { prepareImageFile } from '@/services/imageUpload';
+
+const Garment3D = lazy(() => import('@/components/Garment3D'));
+type ViewMode = '2d' | '3d' | 'split';
 
 const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
 
@@ -38,6 +42,8 @@ export function ConstructorPage() {
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [presetName, setPresetName] = useState('');
   const [error, setError] = useState('');
+  const [viewMode, setViewMode] = useState<ViewMode>('split');
+  const [texture, setTexture] = useState<string | null>(null);
 
   // Load product from URL params
   useEffect(() => {
@@ -119,18 +125,20 @@ export function ConstructorPage() {
   }, []);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const input = e.target;
+    const file = input.files?.[0];
     if (!file) return;
     setUploading(true);
+    setError('');
     try {
-      const result = await uploadToCloudinary(file);
-      await canvasRef.current?.addImage(result.url);
+      const dataUrl = await prepareImageFile(file);
+      await canvasRef.current?.addImage(dataUrl);
     } catch (err) {
       console.error('Upload failed:', err);
-      setError('Не удалось загрузить изображение.');
+      setError(err instanceof Error ? err.message : 'Не удалось загрузить изображение.');
     } finally {
       setUploading(false);
-      e.target.value = '';
+      input.value = '';
     }
   };
 
@@ -170,6 +178,18 @@ export function ConstructorPage() {
     canvasRef.current?.updateActiveLayer(patch);
     refreshActive();
   };
+
+  // ── 3D: live texture from the 2D canvas + drag-to-move on the model ──
+  useEffect(() => {
+    if (viewMode === '2d') return;
+    const id = requestAnimationFrame(() => setTexture(canvasRef.current?.exportDesignTexture() ?? null));
+    return () => cancelAnimationFrame(id);
+  }, [layers, viewMode, side]);
+
+  const handleDrag3D = useCallback((u: number, v: number) => {
+    const a = product?.canvas_area;
+    if (a) canvasRef.current?.moveActiveTo(a.x + u * a.width, a.y + (1 - v) * a.height);
+  }, [product]);
 
   // ── Side switch: save current, load other ──
 
@@ -349,18 +369,58 @@ export function ConstructorPage() {
             ))}
           </div>
 
-          {/* Canvas */}
-          <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
-            <MerchCanvas
-              ref={canvasRef}
-              productType={product.product_type}
-              side={side}
-              color={selectedColor}
-              canvasArea={product.canvas_area}
-              onLayerSelected={handleLayerSelected}
-              onLayersChanged={handleLayersChanged}
-            />
+          {/* View mode */}
+          <div className="mb-4 inline-flex rounded-lg border border-gray-200 bg-white p-1">
+            {([['2d', '2D'], ['split', '2D + 3D'], ['3d', '3D']] as const).map(([m, label]) => (
+              <button
+                key={m}
+                onClick={() => setViewMode(m)}
+                className={`rounded-md px-3 py-1.5 text-sm font-semibold transition ${
+                  viewMode === m ? 'bg-orange-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
+
+          {/* Canvas (stays mounted so edits are never lost) + 3D viewer */}
+          <div className="flex w-full flex-wrap items-start justify-center gap-4">
+            <div className={`rounded-xl bg-white shadow-sm ring-1 ring-gray-200 ${viewMode === '3d' ? 'hidden' : ''}`}>
+              <MerchCanvas
+                ref={canvasRef}
+                productType={product.product_type}
+                side={side}
+                color={selectedColor}
+                canvasArea={product.canvas_area}
+                onLayerSelected={handleLayerSelected}
+                onLayersChanged={handleLayersChanged}
+              />
+            </div>
+            {viewMode !== '2d' && (
+              <div
+                className={`h-[480px] overflow-hidden rounded-xl bg-gradient-to-b from-gray-100 to-gray-300 ring-1 ring-gray-200 ${
+                  viewMode === '3d' ? 'w-full max-w-[680px]' : 'w-[400px] max-w-full'
+                }`}
+              >
+                <Suspense fallback={<div className="flex h-full items-center justify-center text-sm text-gray-400">Загрузка 3D…</div>}>
+                  <Garment3D
+                    productType={product.product_type}
+                    color={selectedColor}
+                    side={side}
+                    texture={texture}
+                    canvasArea={product.canvas_area}
+                    onDrag={activeLayer ? handleDrag3D : undefined}
+                  />
+                </Suspense>
+              </div>
+            )}
+          </div>
+          {viewMode !== '2d' && (
+            <p className="mt-2 text-center text-xs text-gray-400">
+              3D: крутите мышью, колесо — зум. Выберите элемент и тяните по изделию, чтобы переместить принт.
+            </p>
+          )}
 
           {/* Quick actions under canvas */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
