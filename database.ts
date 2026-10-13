@@ -1,3 +1,4 @@
+import { customizeProduct, narxozLogos } from './customization';
 import { supabase } from './supabase';
 import type { Product, Preset, Clipart, OrderInsert } from '@/types';
 
@@ -9,7 +10,7 @@ export async function fetchProducts(): Promise<Product[]> {
     .select('*')
     .order('base_price', { ascending: true });
   if (error) throw error;
-  return (data ?? []) as Product[];
+  return ((data ?? []) as Product[]).map(customizeProduct);
 }
 
 export async function fetchProductById(id: string): Promise<Product | null> {
@@ -19,7 +20,7 @@ export async function fetchProductById(id: string): Promise<Product | null> {
     .eq('id', id)
     .maybeSingle();
   if (error) throw error;
-  return (data as Product) ?? null;
+  return data ? customizeProduct(data as Product) : null;
 }
 
 // ──────────────── Presets ────────────────
@@ -62,8 +63,8 @@ export async function fetchCliparts(): Promise<Clipart[]> {
     .from('cliparts')
     .select('*')
     .order('category', { ascending: true });
-  if (error) throw error;
-  return (data ?? []) as Clipart[];
+  if (error) return narxozLogos;
+  return [...narxozLogos, ...((data ?? []) as Clipart[])];
 }
 
 // ──────────────── Orders ────────────────

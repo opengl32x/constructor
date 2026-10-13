@@ -187,9 +187,8 @@ export function ConstructorPage() {
   }, [layers, viewMode, side]);
 
   const handleDrag3D = useCallback((u: number, v: number) => {
-    const a = product?.canvas_area;
-    if (a) canvasRef.current?.moveActiveTo(a.x + u * a.width, a.y + (1 - v) * a.height);
-  }, [product]);
+    canvasRef.current?.moveActiveTo(u * 400, (1 - v) * 480);
+  }, []);
 
   // ── Side switch: save current, load other ──
 
@@ -418,7 +417,7 @@ export function ConstructorPage() {
           </div>
           {viewMode !== '2d' && (
             <p className="mt-2 text-center text-xs text-gray-400">
-              3D: крутите мышью, колесо — зум. Выберите элемент и тяните по изделию, чтобы переместить принт.
+              Размещайте текст и лого по всей вещи, включая рукава. В 3D: вращайте мышью, масштабируйте колесом; выбранный принт можно перетаскивать.
             </p>
           )}
 
@@ -565,12 +564,12 @@ export function ConstructorPage() {
                   ))}
                 </div>
                 {/* Grid */}
-                <div className="grid grid-cols-5 gap-2 sm:grid-cols-6">
+                <div className="grid grid-cols-2 gap-2">
                   {filteredCliparts.map((clip) => (
                     <button
                       key={clip.id}
                       onClick={() => handleAddClipart(clip.image_url)}
-                      className="flex aspect-square items-center justify-center rounded-lg border border-gray-200 bg-white p-2 transition hover:border-brand-400 hover:bg-brand-50"
+                      className="flex aspect-[2/1] items-center justify-center rounded-lg border border-gray-200 bg-white p-2 transition hover:border-brand-400 hover:bg-brand-50"
                       title={clip.name}
                     >
                       <img src={clip.image_url} alt={clip.name} className="h-full w-full object-contain" />
