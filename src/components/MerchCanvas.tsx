@@ -22,6 +22,8 @@ export interface MerchCanvasHandle {
   clearDesign: () => void;
   setBackgroundColor: (color: string) => void;
   getCanvas: () => fabric.Canvas | null;
+  exportDesignTexture: () => string | null;
+  moveActiveTo: (cx: number, cy: number) => void;
 }
 
 interface MerchCanvasProps {
@@ -227,7 +229,7 @@ const MerchCanvas = forwardRef<MerchCanvasHandle, MerchCanvasProps>(
         if (!canvas) return;
         try {
           const img = await loadImage(url);
-          if (!img) return;
+          if (!img) throw new Error('Не удалось прочитать изображение.');
           scaleToWidth(img, 150, canvas);
           centerObject(img, canvas);
           (img as FabricObj).data = { id: crypto.randomUUID(), type: 'image', src: url };
@@ -237,6 +239,7 @@ const MerchCanvas = forwardRef<MerchCanvasHandle, MerchCanvasProps>(
           emitLayersChanged();
         } catch (e) {
           console.error('addImage error', e);
+          throw e;
         }
       },
 
@@ -478,6 +481,37 @@ const MerchCanvas = forwardRef<MerchCanvasHandle, MerchCanvasProps>(
       },
 
       getCanvas: () => fabricRef.current,
+
+      // Transparent PNG of just the print area (used as the 3D decal texture)
+      exportDesignTexture: () => {
+        const canvas = fabricRef.current;
+        if (!canvas) return null;
+        const hidden = [mockupRef.current, printAreaRef.current].filter(Boolean) as FabricObj[];
+        hidden.forEach((o) => (o.visible = false));
+        const bg = canvas.backgroundColor;
+        canvas.backgroundColor = '';
+        canvas.renderAll();
+        const url = canvas.toDataURL({
+          format: 'png', multiplier: 2,
+          left: canvasArea.x, top: canvasArea.y,
+          width: canvasArea.width, height: canvasArea.height,
+        });
+        hidden.forEach((o) => (o.visible = true));
+        canvas.backgroundColor = bg;
+        canvas.renderAll();
+        return url;
+      },
+
+      // Move the selected layer's centre (used by drag-in-3D)
+      moveActiveTo: (cx: number, cy: number) => {
+        const canvas = fabricRef.current;
+        const active = canvas?.getActiveObject();
+        if (!canvas || !active) return;
+        active.setPositionByOrigin(new fabric.Point(cx, cy), 'center', 'center');
+        active.setCoords();
+        canvas.renderAll();
+        emitLayersChanged();
+      },
     }));
 
     // ── Init canvas ────────────────────────────
@@ -529,6 +563,9 @@ const MerchCanvas = forwardRef<MerchCanvasHandle, MerchCanvasProps>(
       canvas.on('selection:cleared', onCleared);
       canvas.on('object:modified', onModified);
       canvas.on('text:changed', onTextChanged);
+      canvas.on('object:moving', onTextChanged);
+      canvas.on('object:scaling', onTextChanged);
+      canvas.on('object:rotating', onTextChanged);
 
       reloadMockup();
 
