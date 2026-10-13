@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Wand2, Palette, Layers, ShoppingBag, MapPin } from 'lucide-react';
 import type { Product, Preset, ProductColor } from '@/types';
 import { fetchProducts, fetchFeaturedPresets } from '@/services/database';
-import { getMockupUrl } from '@/services/mockups';
+import { GarmentPhoto } from '@/components/GarmentPhoto';
 
 export function CatalogPage() {
   const navigate = useNavigate();
@@ -141,8 +141,8 @@ export function CatalogPage() {
                   className="relative flex h-64 cursor-pointer items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100"
                   onClick={() => openConstructor(product.id, color.hex)}
                 >
-                  <img
-                    src={getMockupUrl(product.product_type, 'front', color.hex)}
+                  <GarmentPhoto
+                    type={product.product_type} color={color.hex}
                     alt={product.name}
                     className="h-full w-full object-contain p-4 transition group-hover:scale-105"
                   />
@@ -226,8 +226,8 @@ export function CatalogPage() {
                     className="group relative flex flex-col items-center overflow-hidden rounded-xl border border-gray-200 bg-white transition hover:border-gray-300 hover:shadow-md"
                   >
                     <div className="flex h-32 w-full items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-2">
-                      <img
-                        src={getMockupUrl(product.product_type, 'front', presetColor)}
+                      <GarmentPhoto
+                        type={product.product_type} color={presetColor}
                         alt={preset.name}
                         className="h-full w-full object-contain transition group-hover:scale-105"
                       />
