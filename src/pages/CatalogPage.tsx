@@ -58,20 +58,30 @@ export function CatalogPage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative isolate overflow-hidden bg-[#0a0d1c] bg-[radial-gradient(ellipse_at_top_right,rgba(70,90,150,0.35),transparent_55%)] text-white">
+      <section className="relative isolate overflow-hidden bg-[#0a0d1c] text-white lg:min-h-[640px]">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute -left-20 -top-20 h-80 w-80 rounded-full bg-brand-500 blur-3xl" />
         </div>
-        <div className="relative z-10 mx-auto max-w-7xl px-4 pb-10 pt-12 sm:px-6 lg:flex lg:min-h-[640px] lg:items-center lg:px-8 lg:py-16">
-          <div className="lg:max-w-2xl">
-            <div className="flex min-h-[340px] items-center sm:min-h-[400px] lg:block lg:min-h-0">
-            <h1 className="text-4xl font-extrabold leading-tight tracking-tight drop-shadow-[0_2px_14px_rgba(0,0,0,0.65)] sm:text-5xl lg:text-6xl">
+        {/* Hero artwork */}
+        <img
+          src="/hero-girls.webp"
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          className="pointer-events-none absolute bottom-0 right-0 -z-10 h-full w-auto max-w-none select-none object-contain object-right-bottom opacity-40 lg:z-0 lg:opacity-100"
+          style={{
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 22%)',
+            maskImage: 'linear-gradient(to right, transparent 0%, #000 22%)',
+          }}
+        />
+        <div className="relative z-10 mx-auto flex max-w-7xl items-center px-4 py-24 sm:px-6 lg:min-h-[640px] lg:px-8">
+          <div className="max-w-2xl">
+            <h1 className="text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">
               Создай свой<br />
               <span className="bg-gradient-to-r from-brand-400 to-brand-600 bg-clip-text text-transparent">
                 уникальный мерч
               </span>
             </h1>
-            </div>
             <p className="mt-6 max-w-lg text-lg text-gray-300">
               Добавляй принты, надписи и логотипы, выбирай цвет и оформляй заказ — всё прямо в браузере,
               без специальных программ. Готовый мерч ты заберёшь в колледже.
@@ -94,14 +104,6 @@ export function CatalogPage() {
             </div>
           </div>
         </div>
-        {/* Hero artwork */}
-        <img
-          src="/hero-girls.webp"
-          alt=""
-          aria-hidden="true"
-          draggable={false}
-          className="pointer-events-none absolute right-0 top-12 z-0 h-[340px] w-auto max-w-none select-none sm:h-[400px] lg:top-1/2 lg:h-[92%] lg:-translate-y-1/2"
-        />
       </section>
 
       {/* Features strip */}
