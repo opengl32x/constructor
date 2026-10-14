@@ -62,19 +62,7 @@ export function CatalogPage() {
         <div className="absolute inset-0 opacity-10">
           <div className="absolute -left-20 -top-20 h-80 w-80 rounded-full bg-brand-500 blur-3xl" />
         </div>
-        {/* Hero artwork */}
-        <img
-          src="/hero-girls.webp"
-          alt=""
-          aria-hidden="true"
-          draggable={false}
-          className="pointer-events-none absolute bottom-0 right-0 -z-10 h-full w-auto max-w-none select-none object-contain object-right-bottom opacity-40 lg:z-0 lg:opacity-100"
-          style={{
-            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 22%)',
-            maskImage: 'linear-gradient(to right, transparent 0%, #000 22%)',
-          }}
-        />
-        <div className="relative z-10 mx-auto flex max-w-7xl items-center px-4 py-24 sm:px-6 lg:min-h-[640px] lg:px-8">
+        <div className="relative z-10 mx-auto flex max-w-7xl items-center px-4 pb-6 pt-20 sm:px-6 lg:min-h-[640px] lg:px-8 lg:py-24">
           <div className="max-w-2xl">
             <h1 className="text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">
               Создай свой<br />
@@ -104,6 +92,14 @@ export function CatalogPage() {
             </div>
           </div>
         </div>
+        {/* Hero artwork */}
+        <img
+          src="/hero-girls.webp"
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          className="pointer-events-none relative z-0 mx-auto block h-[420px] w-auto max-w-full select-none object-contain sm:h-[520px] lg:absolute lg:bottom-0 lg:right-0 lg:mx-0 lg:h-full lg:max-w-none"
+        />
       </section>
 
       {/* Features strip */}
